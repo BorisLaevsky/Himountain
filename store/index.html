@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shop — HiMountain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+  <!-- SITE SIDEBAR -->
+  <div class="page-shell">
+
+  <aside class="site-sidebar">
+    <a href="../index.html" class="sidebar-logo">
+      <img src="../assets/hi-mountain-logo.png" alt="HiMountain">
+    </a>
+
+    <div class="sidebar-section sidebar-stories">
+      <span class="sidebar-heading">Stories</span>
+      <a href="../projects/project4.html" class="story-logo-link"><img src="../assets/story-logos/you_are_all_daylight.png" alt="You Are All Daylight"></a>
+      <a href="../projects/project3.html" class="story-logo-link"><img src="../assets/story-logos/down_to_earth.png" alt="Down to Earth"></a>
+      <a href="../projects/project2.html" class="story-logo-link"><img src="../assets/story-logos/being_different.png" alt="Being Different"></a>
+      <a href="../projects/project1.html" class="story-logo-link"><img src="../assets/story-logos/the_weekend.png" alt="The Weekend"></a>
+    </div>
+
+    <div class="sidebar-section">
+      <a href="../about/index.html">Contact</a>
+    </div>
+  </aside>
+
+  <main class="page-main">
+  <!-- CONTENT -->
+  <div class="container">
+
+    <h1>Store</h1>
+
+    <!-- SHOP ITEM -->
+    <div class="shop-item">
+
+      <div class="shop-images" data-carousel>
+        <img src="images/item01.jpg" alt="">
+        <img src="images/item01_detail1.jpg" alt="">
+        <img src="images/item01_detail2.jpg" alt="">
+
+        <div class="image-counter"></div>
+      </div>
+
+      <div class="item-desc">
+        <p>Kaspar Hauser, 80 × 120 cm, oil on wood, 2025</p>
+        <p class="price">€2000</p>
+        <span class="insurance">For inquiries please contact</span>
+      </div>
+
+    </div>
+
+    <!-- DUPLICATE BLOCK ABOVE FOR MORE ITEMS -->
+
+  </div>
+  </main>
+
+  </div>
+
+  <!-- CAROUSEL SCRIPT -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('[data-carousel]').forEach(carousel => {
+      const images = carousel.querySelectorAll('img');
+      const counter = carousel.querySelector('.image-counter');
+      let index = 0;
+
+      if (images.length === 0) return;
+
+      function update() {
+        images.forEach(img => img.classList.remove('active'));
+        images[index].classList.add('active');
+        if (counter) {
+          counter.textContent = (index + 1) + ' / ' + images.length;
+        }
+      }
+
+      update();
+
+      // click (desktop)
+      carousel.addEventListener('click', () => {
+        index = (index + 1) % images.length;
+        update();
+      });
+
+      // swipe (mobile)
+      let startX = 0;
+
+      carousel.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+      });
+
+      carousel.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+
+        if (Math.abs(diff) > 40) {
+          if (diff > 0) {
+            index = (index + 1) % images.length;
+          } else {
+            index = (index - 1 + images.length) % images.length;
+          }
+          update();
+        }
+      });
+
+    });
+
+  });
+  </script>
+
+</body>
+</html>

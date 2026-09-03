@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HiMountain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body id="home">
+
+  <div class="container">
+
+    <img
+      id="mainimage"
+      src="logo.png"
+      alt="HiMountain"
+    >
+
+    <div class="text-block">
+
+      <p id="tagline">
+        We started in film, but now we also curate. Different hats with the same desire - <a href="gate.html" class="stories-link">telling stories</a>.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- JS scripts -->
+  <script src="frames.js"></script>
+  <script src="fitTextToContainer.js"></script>
+  <script>
+    // --- Create the animation container dynamically ---
+    const pre = document.createElement('pre');
+pre.id = 'trace';
+pre.style.position = 'fixed';       // stay in the background
+pre.style.top = '0';
+pre.style.left = '0';
+pre.style.width = '100%';
+pre.style.height = '100%';          // fill the viewport
+pre.style.margin = '0';
+pre.style.padding = '1vw';         // optional, so text isn't cut off
+pre.style.fontFamily = 'monospace';
+pre.style.zIndex = '0';             // behind everything
+pre.style.pointerEvents = 'none';   // click through
+pre.style.whiteSpace = 'pre';  // allow line wrapping
+pre.style.overflow = 'hidden';      // hide overflow
+
+
+    const span = document.createElement('span');
+    span.id = 'trace-chars';
+    pre.appendChild(span);
+
+    document.body.appendChild(pre);
+
+    // --- Original animation code from your index.html ---
+    var i = -1;
+    var dir = 'inc';
+    var max = frames.length;
+    var fps = 10;
+
+    setPreCharSize();
+    startAnimating();
+
+    window.addEventListener('resize', setPreCharSize);
+
+   function setPreCharSize() {
+  const charRatio = 0.66;
+
+  // Use the full viewport width for scaling
+  const containerWidth = window.innerWidth;
+
+  // Get the font size that fits the first frame
+  let charWidth = fitTextToContainer(frames[0].split('\n')[1], 'monospace', containerWidth) * charRatio;
+
+  // Optional: limit the max font size so it's not gigantic
+  charWidth = Math.min(charWidth, 24); // max 24px
+  charWidth = Math.max(charWidth, 6);  // min 6px
+
+  const charHeight = charRatio * charWidth;
+
+  pre.style.fontSize = charWidth + "px";
+  pre.style.lineHeight = charHeight + "px";
+}
+
+
+    var fpsInterval, startTime, now, then, elapsed;
+    function startAnimating() {
+      fpsInterval = 1000 / fps;
+      then = Date.now();
+      startTime = then;
+      animate();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      now = Date.now();
+      elapsed = now - then;
+
+      if (elapsed > fpsInterval) {
+        then = now - (elapsed % fpsInterval);
+        step();
+      }
+    }
+
+    function step() {
+      if (dir === 'inc') {
+        if (i === max - 1) {
+          dir = 'dec';
+          i--;
+        } else i++;
+      } else {
+        if (i === 0) {
+          dir = 'inc';
+          i++;
+        } else i--;
+      }
+
+      document.getElementById('trace-chars').innerText = frames[i];
+    }
+
+    // --- Fit the tagline to a single line, with a floor size below
+    //     which the 480px media query takes over and lets it wrap ---
+    function fitTagline() {
+      var el = document.getElementById('tagline');
+      if (!el) return;
+
+      var maxSize = 22; // default/cap size in px
+      var minSize = 13; // below this, defer to normal wrapping
+
+      if (window.innerWidth <= 480) {
+        el.style.fontSize = '';
+        return;
+      }
+
+      var containerWidth = el.parentElement.clientWidth;
+      var size = maxSize;
+      el.style.fontSize = size + 'px';
+
+      while (el.scrollWidth > containerWidth && size > minSize) {
+        size -= 1;
+        el.style.fontSize = size + 'px';
+      }
+    }
+
+    fitTagline();
+    window.addEventListener('resize', fitTagline);
+  </script>
+
+</body>
+</html>

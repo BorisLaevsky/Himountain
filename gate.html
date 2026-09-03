@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HiMountain — Simple Fade-In Animated Gate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+
+  #stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="c"></canvas>
+</div>
+
+<script>
+(function () {
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d');
+
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W, H;
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+  }
+  resize();
+
+  window.addEventListener('resize', function () {
+    resize();
+    if (spriteLoaded) layoutBounds();
+  });
+
+  // CONFIGURATION
+  var SPRITE_SRC = "gate_spritesheet.png"; 
+  var TOTAL_FRAMES = 18;       // Updated: 18 total frames
+  var FPS = 10;                // Updated: 10 FPS
+  var FADE_IN_DURATION = 2800; // Alpha fade duration in ms
+  var MAX_LOOPS = 4;           // Auto-explode after 4 full animation loops
+
+  var spriteImg = new Image();
+  var spriteLoaded = false;
+  var frameWidth = 0;
+  var frameHeight = 0;
+  var currentFrame = 0;
+  var loopCount = 0;
+
+  var bounds = null;
+  var particles = [];
+  var state = 'FADING_IN'; // 'FADING_IN', 'PLAYING', 'EXPLODING'
+  var stateStart = 0;
+  var lastFrameTime = performance.now();
+
+  spriteImg.onload = function () {
+    spriteLoaded = true;
+    frameWidth = Math.floor(spriteImg.width / TOTAL_FRAMES);
+    frameHeight = spriteImg.height;
+    layoutBounds();
+    stateStart = performance.now();
+    requestAnimationFrame(tick);
+  };
+  spriteImg.src = SPRITE_SRC;
+
+  function layoutBounds() {
+    var minDim = Math.min(W, H);
+
+    // Reduced by 20% (0.98 -> 0.784)
+    var targetSize = minDim * 0.784; 
+    var aspect = frameWidth / frameHeight;
+
+    var boxW, boxH;
+    if (aspect >= 1) {
+      boxW = targetSize;
+      boxH = targetSize / aspect;
+    } else {
+      boxH = targetSize;
+      boxW = targetSize * aspect;
+    }
+
+    bounds = {
+      x: Math.round(W / 2 - boxW / 2),
+      y: Math.round(H / 2 - boxH / 2),
+      w: Math.round(boxW),
+      h: Math.round(boxH)
+    };
+  }
+
+  function startExplosion() {
+    state = 'EXPLODING';
+    stateStart = performance.now();
+
+    var off = document.createElement('canvas');
+    off.width = bounds.w;
+    off.height = bounds.h;
+    var octx = off.getContext('2d');
+
+    var sx = Math.floor(currentFrame * frameWidth);
+    
+    octx.drawImage(
+      spriteImg, 
+      sx, 0, frameWidth, frameHeight, 
+      0, 0, bounds.w, bounds.h
+    );
+
+    var data = octx.getImageData(0, 0, bounds.w, bounds.h).data;
+    var STEP = 2;
+    particles = [];
+
+    for (var y = 0; y < bounds.h; y += STEP) {
+      for (var x = 0; x < bounds.w; x += STEP) {
+        var i = (y * bounds.w + x) * 4;
+        var r = data[i];
+        var g = data[i + 1];
+        var b = data[i + 2];
+        var a = data[i + 3];
+
+        if (a < 30 || (r > 220 && g > 220 && b > 220)) continue;
+
+        var startX = bounds.x + x;
+        var startY = bounds.y + y;
+
+        var dx = startX - (bounds.x + bounds.w / 2);
+        var dy = startY - (bounds.y + bounds.h / 2);
+
+        var angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.6;
+        var speed = 5.6 + Math.random() * 16;
+
+        particles.push({
+          x: startX,
+          y: startY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - (Math.random() * 3.2),
+          r: r, g: g, b: b, a: a / 255,
+          size: 1.2
+        });
+      }
+    }
+  }
+
+  function tick(now) {
+    ctx.save();
+    ctx.scale(dpr, dpr);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    if (state === 'FADING_IN' || state === 'PLAYING') {
+      if (now - lastFrameTime > 1000 / FPS) {
+        currentFrame++;
+        
+        if (currentFrame >= TOTAL_FRAMES) {
+          currentFrame = 0;
+          loopCount++;
+
+          if (state === 'PLAYING' && loopCount >= MAX_LOOPS) {
+            startExplosion();
+            ctx.restore();
+            requestAnimationFrame(tick);
+            return;
+          }
+        }
+        lastFrameTime = now;
+      }
+
+      var sx = Math.floor(currentFrame * frameWidth);
+
+      if (state === 'FADING_IN') {
+        var elapsed = now - stateStart;
+        var alpha = Math.min(1, elapsed / FADE_IN_DURATION);
+
+        ctx.globalAlpha = alpha;
+        ctx.drawImage(
+          spriteImg, 
+          sx, 0, frameWidth, frameHeight, 
+          bounds.x, bounds.y, bounds.w, bounds.h
+        );
+        ctx.globalAlpha = 1.0;
+
+        if (alpha >= 1) {
+          state = 'PLAYING';
+          loopCount = 0;
+        }
+      } else {
+        ctx.drawImage(
+          spriteImg, 
+          sx, 0, frameWidth, frameHeight, 
+          bounds.x, bounds.y, bounds.w, bounds.h
+        );
+      }
+
+    } else if (state === 'EXPLODING') {
+      var elapsedExp = now - stateStart;
+      var expDuration = 1350;
+      var tExp = Math.min(1, elapsedExp / expDuration);
+      var fadeAlpha = 1 - tExp;
+
+      for (var j = 0; j < particles.length; j++) {
+        var p = particles[j];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.94;
+        p.vy *= 0.94;
+
+        ctx.fillStyle = 'rgba(' + p.r + ',' + p.g + ',' + p.b + ',' + (p.a * fadeAlpha) + ')';
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
+
+      if (tExp >= 1) {
+        window.location.href = 'projects/project4.html';
+        ctx.restore();
+        return;
+      }
+    }
+
+    ctx.restore();
+    requestAnimationFrame(tick);
+  }
+
+  canvas.addEventListener('click', function (e) {
+    if (state === 'PLAYING' || state === 'FADING_IN') {
+      startExplosion();
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
