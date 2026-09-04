@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Down to Earth – HiMountain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    /* ==========================================
+       HOVER PREVIEW FIXES — page-specific on purpose.
+
+       This page intentionally OVERRIDES the shared .hover-term /
+       .hover-term-label / .hover-preview rules from style.css.
+       Reason: this is the only page with the click-to-open image
+       lightbox (below), so its hover behavior needs to differ from
+       every other page:
+         - the small preview should only ever appear on hover-capable
+           devices (desktop), gated via @media (hover: hover)
+         - on touch devices it's fully suppressed, since tapping opens
+           the lightbox directly instead
+       If you change the shared hover-term styling in style.css,
+       remember this page won't pick it up automatically — mirror
+       the change here too if it should apply on Down to Earth.
+    ========================================== */
+    .hover-term {
+      position: relative;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .hover-term-label {
+      display: inline-block;
+      line-height: 1;
+      vertical-align: baseline;
+      font-family: 'Cormorant', serif;
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #e30613;
+      font-style: italic;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 4px;
+      pointer-events: auto;
+    }
+
+    /* Preview popover strictly restricted to hover-capable devices (Desktop) */
+    @media (hover: hover) {
+      .hover-term .hover-preview {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        margin-bottom: 8px;
+        z-index: 20;
+        width: 220px;
+        pointer-events: none;
+      }
+
+      .hover-term .hover-preview img {
+        display: none;
+        width: 100%;
+        height: auto;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      }
+
+      .hover-term .hover-preview img:first-child {
+        display: block;
+      }
+
+      .hover-term:hover .hover-preview {
+        display: block;
+      }
+    }
+
+    /* Completely suppress hover preview on touch screens (Mobile) */
+    @media (hover: none) {
+      .hover-term .hover-preview {
+        display: none !important;
+      }
+    }
+
+    /* ==========================================
+       LIGHTBOX / CENTERED IMAGE & MATTE GLASS
+    ========================================== */
+    .lightbox-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+
+      /* Matte Glass Backdrop */
+      background: rgba(255, 255, 255, 0.25); 
+      -webkit-backdrop-filter: blur(20px) saturate(130%);
+      backdrop-filter: blur(20px) saturate(130%);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      cursor: pointer;
+    }
+
+    .lightbox-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Holds the centered image + text wrapper strictly to the width of the image */
+    .lightbox-content {
+      position: relative;
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 70vw; 
+      max-height: 85vh;
+      cursor: default;
+    }
+
+    .lightbox-image-container {
+      position: relative; /* Anchor point for exact vertical centering of buttons */
+      user-select: none;
+      display: block;
+      line-height: 0;
+      width: 100%;
+    }
+
+    .lightbox-image-container img {
+      max-width: 70vw;
+      max-height: 70vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* OUTSIDE < > ARROW BUTTONS */
+    .lightbox-arrow-btn {
+      position: absolute;
+      top: 50%; /* Pin exactly to vertical midpoint of image container */
+      transform: translateY(-50%);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: #111111;
+      font-family: inherit;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 300;
+      line-height: 1;
+      cursor: pointer;
+      user-select: none;
+      padding: 8px;
+      opacity: 0.6;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .lightbox-arrow-btn.left {
+      right: 100%;
+      margin-right: clamp(12px, 2.5vw, 28px);
+    }
+
+    .lightbox-arrow-btn.right {
+      left: 100%;
+      margin-left: clamp(12px, 2.5vw, 28px);
+    }
+
+    .lightbox-arrow-btn:hover {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.15);
+    }
+
+    .lightbox-arrow-btn:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    /* Mobile adjustments: maintain exact 50% image height while keeping arrows outside touch area */
+    @media (max-width: 768px) {
+      .lightbox-content {
+        max-width: 76vw;
+      }
+      .lightbox-image-container img {
+        max-width: 76vw;
+      }
+      .lightbox-arrow-btn.left {
+        right: 100%;
+        margin-right: 6px;
+      }
+      .lightbox-arrow-btn.right {
+        left: 100%;
+        margin-left: 6px;
+      }
+    }
+
+    /* Details Footer under image strictly bounded to image width */
+    .lightbox-details {
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      margin-top: 12px;
+      color: #111111;
+      box-sizing: border-box;
+      font-family: 'Cormorant', serif;
+    }
+
+    .lightbox-caption-line {
+      font-size: 1.15em;
+      line-height: 1.3;
+      color: #111111;
+      font-weight: 400;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .lightbox-artist {
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    .lightbox-work-title {
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .lightbox-secondary-line {
+      font-size: 0.9em;
+      opacity: 0.75;
+      color: #333333;
+      margin-top: 4px;
+      line-height: 1.2;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-topbar">
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="dropdownMenu" aria-label="Open menu">
+    <span class="menu-toggle-bar"></span>
+    <span class="menu-toggle-bar"></span>
+    <span class="menu-toggle-bar"></span>
+  </button>
+
+  <a href="../index.html" class="topbar-logo">
+    <img src="../assets/menulogo.png" alt="HiMountain">
+    <img src="../assets/feather.gif" alt="" class="topbar-logo-feather">
+  </a>
+</header>
+
+<div class="dropdown-backdrop" id="dropdownBackdrop"></div>
+
+<nav class="dropdown-menu" id="dropdownMenu">
+  <div class="sidebar-section sidebar-stories">
+    <span class="sidebar-heading">Stories</span>
+      <a href="project4.html" class="story-logo-link"><img src="../assets/story-logos/you_are_all_daylight.png" alt="You Are All Daylight"></a>
+      <a href="project3.html" class="story-logo-link active"><img src="../assets/story-logos/down_to_earth.png" alt="Down to Earth"></a>
+      <a href="project2.html" class="story-logo-link"><img src="../assets/story-logos/being_different.png" alt="Being Different"></a>
+      <a href="project1.html" class="story-logo-link"><img src="../assets/story-logos/the_weekend.png" alt="The Weekend"></a>
+  </div>
+
+  <div class="sidebar-section sidebar-contact">
+    <a href="../contact/index.html" class="contact-link">Contact</a>
+  </div>
+</nav>
+
+<main class="page-main">
+      <div class="container">
+        <article class="text-block project">
+
+          <header class="project-header">
+            <h1>Down to Earth</h1>
+            <p class="project-subtitle">5.6.25 - 12.6.25 - 14.6.25</p>
+          </header>
+
+          <div class="project-description">
+            <p>
+              Park Hayarkon is one of the few places in Tel Aviv where something like nature (however reduced) still exists. We wanted to simulate the feeling of discovering a natural escape within an urban area: a scene of slow revelation, where the viewer, as protagonist, finds something hidden.
+            </p>
+
+            <p>
+              Tommy's cute animal mysterious wayfinding 
+              <span class="hover-term" 
+                    data-artist="Tommy Chambon" 
+                    data-title="Wayfinding signs" 
+                    data-year="2025" 
+                    data-medium="" 
+                    data-dimensions="">
+                <span class="hover-term-label">signs</span>
+                <span class="hover-preview"><img src="images/down_to_earth/tommy1.jpg" alt="Tommy sign 1">
+                                            <img src="images/down_to_earth/tommy2.jpg" alt="Tommy sign 2">
+                                            <img src="images/down_to_earth/tommy3.jpg" alt="Tommy sign 1"></span>
+              </span> lead the protagonist through the park, until they find Naama's
+              <span class="hover-term" 
+                    data-artist="Naama Doron Angel" 
+                    data-title="00.01 Rest" 
+                    data-year="2025" 
+                    data-medium="Building supplies + Thread" 
+                    data-dimensions="2.00x60 cm">
+                <span class="hover-term-label">00.01 Rest</span>
+                <span class="hover-preview"><img src="images/down_to_earth/00-01-rest1.jpg" alt="00:01 Rest, Naama Doron Angel, view 1">
+                                            <img src="images/down_to_earth/00-01-rest2.jpg" alt="00:01 Rest, Naama Doron Angel, view 2">
+                                            <img src="images/down_to_earth/00-01-rest3.jpg" alt="00:01 Rest, Naama Doron Angel, view 3"></span>
+              </span>,
+              lifting up their head a bit they should spot Iliya's
+              <span class="hover-term" 
+                    data-artist="Iliya Ben Mayor" 
+                    data-title="Dove (dear reltoids)" 
+                    data-year="2025" 
+                    data-medium="Artist’s hair, meditation ball, aluminum cast, plywood, automotive paint" 
+                    data-dimensions="Pedestal: 10x65x80 cm | Statue: 7x7x7 cm">
+                <span class="hover-term-label">Dove (dear reltoids)</span>
+                <span class="hover-preview"><img src="images/down_to_earth/dove1.jpg" alt="Dove (dear reltoids), Iliya Ben Mayor">
+                                            <img src="images/down_to_earth/dove2.jpg" alt="Dove (dear reltoids), Iliya Ben Mayor"></span>
+              </span>,
+              hidden between 3 trees. Then, a path, going down to the water, Boris's
+              <span class="hover-term" 
+                    data-artist="Boris Laevsky" 
+                    data-title="Cyrano de Bergerac" 
+                    data-year="2025" 
+                    data-medium="Plaster, glue, polyurethane foam, ceramics, glass, cctv camera, cigarettes, beads and pins" 
+                    data-dimensions="60x300 cm">
+                <span class="hover-term-label">Cyrano de Bergerac</span>
+                <span class="hover-preview"><img src="images/down_to_earth/cyrano1.jpg" alt="Cyrano de Bergerac, Boris Laevsky">
+                                            <img src="images/down_to_earth/cyrano2.jpg" alt="Cyrano de Bergerac, Boris Laevsky">
+                                            <img src="images/down_to_earth/cyrano3.jpg" alt="Cyrano de Bergerac, Boris Laevsky"></span>
+              </span>.
+            </p>
+
+            <p>
+              Then, Anna's hat,
+              <span class="hover-term" 
+                    data-artist="Anna Sharon" 
+                    data-title="World Domination" 
+                    data-year="2025" 
+                    data-medium="Latex, plastic, metal, leather" 
+                    data-dimensions="23x29x19 cm">
+                <span class="hover-term-label">World Domination</span>
+                <span class="hover-preview"><img src="images/down_to_earth/world_domination1.jpg" alt="World Domination, Anna Sharon">
+                                            <img src="images/down_to_earth/world_domination2.jpg" alt="World Domination, Anna Sharon"></span>
+              </span>
+              and
+              <span class="hover-term" 
+                    data-artist="Anna Sharon" 
+                    data-title="Silver Dining" 
+                    data-year="2025" 
+                    data-medium="Plastic, glass, metal" 
+                    data-dimensions="21x28x21 cm">
+                <span class="hover-term-label">Silver Dining</span>
+                <span class="hover-preview"><img src="images/down_to_earth/silver_dining.jpg" alt="Silver Dining, Anna Sharon"></span>
+              </span>
+              in the dry bushes.
+            </p>
+
+            <p>
+              Then, Adi's
+              <span class="hover-term" 
+                    data-artist="Adi Schvartzbard" 
+                    data-title="Dolphin" 
+                    data-year="2025" 
+                    data-medium="Wax" 
+                    data-dimensions="142x35x21 cm">
+                <span class="hover-term-label">Dolphin</span>
+                <span class="hover-preview"><img src="images/down_to_earth/dolphin1.jpg" alt="Dolphin, Adi Schvartzbard">
+                                            <img src="images/down_to_earth/dolphin2.jpg" alt="Dolphin, Adi Schvartzbard"></span>
+              </span>
+              leaned on one of the bridge's plinths. Boris's
+              <span class="hover-term" 
+                    data-artist="Boris Laevsky" 
+                    data-title="Kaspar Hauser" 
+                    data-year="2024" 
+                    data-medium="Oil on linoleum" 
+                    data-dimensions="90x200 cm">
+                <span class="hover-term-label">Kaspar Hauser</span>
+                <span class="hover-preview"><img src="images/down_to_earth/kaspar_hauser.jpg" alt="Kaspar Hauser, Boris Laevsky"></span>
+              </span>
+              in front of the lake view, exactly in the middle of the island. Iliya's
+              <span class="hover-term" 
+                    data-artist="Iliya Ben Mayor" 
+                    data-title="poppies in the wind" 
+                    data-year="2025" 
+                    data-medium="White Formica-coated wood, synthetic felt, papier-mâché, joint compound, paint" 
+                    data-dimensions="57x119x70 cm">
+                <span class="hover-term-label">poppies in the Wind</span>
+                <span class="hover-preview"><img src="images/down_to_earth/poppies.jpg" alt="poppies in the Wind, Iliya Ben Mayor"></span>
+              </span>, looking at Kaspar.
+            </p>
+
+            <p>
+              Anna's <span class="hover-term" 
+                          data-artist="Anna Shani" 
+                          data-title="Exhibition text" 
+                          data-year="2025" 
+                          data-medium="" 
+                          data-dimensions="">
+                <span class="hover-term-label">Exhibition text</span>
+                <span class="hover-preview"><img src="images/down_to_earth/text.jpg" alt="Exhibition text, Anna Shani"></span>
+              </span> on a small stump, held with a small rock, looking at Kaspar.
+            </p>
+          </div>
+
+          <footer class="project-colophon">
+  <span class="colophon-title">Credits</span>
+
+  <dl class="meta-grid">
+    <div class="meta-item">
+      <dt>Place</dt>
+      <dd>An island under the bridge of Rosh Tzipor, Park Hayarkon, Tel Aviv</dd>
+    </div>
+    <div class="meta-item">
+      <dt>Artists</dt>
+      <dd>Iliya Ben Mayor, Naama Doron Angel, Boris Laevsky, Adi Schvartzbard, Anna Sharon</dd>
+    </div>
+    <div class="meta-item">
+      <dt>Wayfinding signs</dt>
+      <dd>Tommy Chambon</dd>
+    </div>
+    <div class="meta-item">
+      <dt>Lighting</dt>
+      <dd>Tal Haimovich</dd>
+    </div>
+    <div class="meta-item">
+      <dt>Documentation</dt>
+      <dd>Photos by Boris Laevsky</dd>
+    </div>
+  </dl>
+  <div class="meta-downloads meta-downloads-row">
+    <a href="exhibition_text/down_to_earth.pdf" target="_blank" class="meta-link">Text by Anna Shani ↗</a>
+    <span class="sep">/</span>
+    <span>Poster (Coming soon)</span>
+    <span class="sep">/</span>
+    <a href="floor_plan/down_to_earth.pdf" target="_blank" class="meta-link">Floor plan ↗</a>
+  </div>
+</footer>
+
+        </article>
+      </div>
+    </main>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const lightbox = document.createElement("div");
+      lightbox.className = "lightbox-overlay";
+      lightbox.innerHTML = `
+        <div class="lightbox-content" id="lightbox-content">
+          <div class="lightbox-image-container">
+            <button class="lightbox-arrow-btn left" id="lightbox-prev" aria-label="Previous image">&lt;</button>
+            <button class="lightbox-arrow-btn right" id="lightbox-next" aria-label="Next image">&gt;</button>
+            <img src="" alt="" id="lightbox-img">
+          </div>
+          <div class="lightbox-details" id="lightbox-details">
+            <div class="lightbox-caption-line" id="lightbox-caption-line"></div>
+            <div class="lightbox-secondary-line" id="lightbox-secondary-line"></div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(lightbox);
+
+      const lightboxContent = lightbox.querySelector("#lightbox-content");
+      const lightboxDetails = lightbox.querySelector("#lightbox-details");
+      const lightboxImg = lightbox.querySelector("#lightbox-img");
+      const lightboxCaptionLine = lightbox.querySelector("#lightbox-caption-line");
+      const lightboxSecondaryLine = lightbox.querySelector("#lightbox-secondary-line");
+      const btnPrev = lightbox.querySelector("#lightbox-prev");
+      const btnNext = lightbox.querySelector("#lightbox-next");
+
+      let currentImages = [];
+      let currentIndex = 0;
+
+      function openLightbox(termEl) {
+        const imgs = Array.from(termEl.querySelectorAll(".hover-preview img"));
+        if (imgs.length === 0) return;
+
+        currentImages = imgs;
+        currentIndex = 0;
+
+        const artist = termEl.getAttribute("data-artist") || "";
+        const title = termEl.getAttribute("data-title") || "";
+        const year = termEl.getAttribute("data-year") || "";
+        const medium = termEl.getAttribute("data-medium") || "";
+        const dimensions = termEl.getAttribute("data-dimensions") || "";
+
+        // Top line: Bold Artist, Italic Title
+        lightboxCaptionLine.innerHTML = `<span class="lightbox-artist">${artist}</span>, <span class="lightbox-work-title">${title}</span>`;
+
+        // Bottom line: Medium, Dimensions, Year
+        const secondaryParts = [];
+        if (medium) secondaryParts.push(medium);
+        if (dimensions) secondaryParts.push(dimensions);
+        if (year) secondaryParts.push(year);
+        
+        lightboxSecondaryLine.textContent = secondaryParts.join(", ");
+
+        updateLightboxDetails();
+        lightbox.classList.add("active");
+      }
+
+      function updateLightboxDetails() {
+        const currentImg = currentImages[currentIndex];
+        
+        // Dynamically match text width strictly to rendered image width
+        const handleImageLoad = () => {
+          const renderedWidth = lightboxImg.getBoundingClientRect().width;
+          if (renderedWidth > 0) {
+            lightboxDetails.style.width = `${renderedWidth}px`;
+            lightboxContent.style.width = `${renderedWidth}px`;
+          }
+        };
+
+        lightboxImg.onload = handleImageLoad;
+        lightboxImg.src = currentImg.getAttribute("src");
+
+        // Force check if image is already cached
+        if (lightboxImg.complete) {
+          handleImageLoad();
+        }
+
+        if (currentImages.length > 1) {
+          btnPrev.style.display = "flex";
+          btnNext.style.display = "flex";
+        } else {
+          btnPrev.style.display = "none";
+          btnNext.style.display = "none";
+        }
+      }
+
+      // Attach click events to terms
+      document.querySelectorAll(".hover-term").forEach((term) => {
+        term.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openLightbox(term);
+        });
+      });
+
+      // Arrow navigation buttons
+      btnNext.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (currentImages.length <= 1) return;
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        updateLightboxDetails();
+      });
+
+      btnPrev.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (currentImages.length <= 1) return;
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        updateLightboxDetails();
+      });
+
+      // Keyboard arrow keys
+      document.addEventListener("keydown", (e) => {
+        if (!lightbox.classList.contains("active") || currentImages.length <= 1) return;
+        if (e.key === "ArrowRight") {
+          currentIndex = (currentIndex + 1) % currentImages.length;
+          updateLightboxDetails();
+        } else if (e.key === "ArrowLeft") {
+          currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+          updateLightboxDetails();
+        }
+      });
+
+      // Close when clicking outside the photo and detail area
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) {
+          lightbox.classList.remove("active");
+        }
+      });
+
+      // Escape key to exit
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          lightbox.classList.remove("active");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
