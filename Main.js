@@ -34,6 +34,7 @@ const menuToggle = document.getElementById('menuToggle');
 const dropdownMenu = document.getElementById('dropdownMenu');
 const dropdownBackdrop = document.getElementById('dropdownBackdrop');
 const menuToggleFeather = document.getElementById('menuToggleFeather');
+const menuToggleLabel = menuToggle?.querySelector('.menu-toggle-label');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
   function closeDropdown() {
@@ -42,6 +43,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     dropdownBackdrop.classList.remove('open');
     menuToggleFeather?.classList.remove('open');
     menuToggle.setAttribute('aria-expanded', 'false');
+    if (menuToggleLabel) menuToggleLabel.textContent = 'Menu';
   }
 
   function positionFeatherForOpen() {
@@ -62,6 +64,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     dropdownBackdrop.classList.add('open');
     menuToggleFeather?.classList.add('open');
     menuToggle.setAttribute('aria-expanded', 'true');
+    if (menuToggleLabel) menuToggleLabel.textContent = 'Close';
   }
 
   menuToggle.addEventListener('click', (e) => {
