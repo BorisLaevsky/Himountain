@@ -48,20 +48,29 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
 
   function positionFeatherForOpen() {
     if (!menuToggleFeather) return;
-    // Stop the feather just above the Contact link rather than at the very
-    // bottom of the menu, so it doesn't land on top of it. Falls back to the
-    // menu's own bottom edge if that section isn't found.
+    // Land the feather just below the Contact link (not on top of it, not
+    // stopping short above it). Falls back to the menu's own bottom edge if
+    // that section isn't found.
     const stopEl = dropdownMenu.querySelector('.sidebar-contact') || dropdownMenu;
     const stopRect = stopEl.getBoundingClientRect();
     const featherRect = menuToggleFeather.getBoundingClientRect();
-    const gapAboveStop = 20;
+    const gapBelowStop = 16;
     // Measured while still in its resting (closed) position; +12 compensates
     // for the menu's own closed-state translateY(-12px).
-    const drop = (stopRect.top + 12 - gapAboveStop) - featherRect.bottom;
+    const drop = (stopRect.bottom + 12 + gapBelowStop) - featherRect.top;
     menuToggleFeather.style.setProperty('--feather-drop', Math.max(drop, 0) + 'px');
   }
 
+  function positionDropdownMenu() {
+    // Line the dropdown's left edge up with the menu button's actual left
+    // edge, so it always drops straight down from the button regardless of
+    // topbar padding/layout.
+    const btnRect = menuToggle.getBoundingClientRect();
+    dropdownMenu.style.left = btnRect.left + 'px';
+  }
+
   function openDropdown() {
+    positionDropdownMenu();
     positionFeatherForOpen();
     menuToggle.classList.add('open');
     dropdownMenu.classList.add('open');
