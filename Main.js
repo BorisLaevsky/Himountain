@@ -44,7 +44,19 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggle.setAttribute('aria-expanded', 'false');
   }
 
+  function positionFeatherForOpen() {
+    if (!menuToggleFeather) return;
+    // Measure while still in its resting (closed) position, then aim the
+    // slide so the feather ends level with the dropdown's bottom edge.
+    // (+12 compensates for the menu's own closed-state translateY(-12px).)
+    const menuRect = dropdownMenu.getBoundingClientRect();
+    const featherRect = menuToggleFeather.getBoundingClientRect();
+    const drop = (menuRect.bottom + 12) - featherRect.bottom;
+    menuToggleFeather.style.setProperty('--feather-drop', Math.max(drop, 0) + 'px');
+  }
+
   function openDropdown() {
+    positionFeatherForOpen();
     menuToggle.classList.add('open');
     dropdownMenu.classList.add('open');
     dropdownBackdrop.classList.add('open');

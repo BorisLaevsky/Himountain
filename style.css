@@ -110,38 +110,22 @@ a {
   transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
-.menu-toggle.open .menu-toggle-bar:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-
-.menu-toggle.open .menu-toggle-bar:nth-child(2) {
-  opacity: 0;
-}
-
-.menu-toggle.open .menu-toggle-bar:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
-
 .menu-toggle-wrap {
-  position: relative;
   display: flex;
   align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .menu-toggle-feather {
-  position: absolute;
-  top: -4px;
-  right: -18px;
-  width: 20px;
+  width: 26px;
   height: auto;
   pointer-events: none;
-  transform: rotate(15deg) translateY(0);
-  transition: transform 0.5s cubic-bezier(0.34, 0.8, 0.36, 1);
+  transition: transform 0.25s ease;
 }
 
 .menu-toggle-feather.open {
-  transform: rotate(50deg) translateY(52px);
+  transform: translateY(var(--feather-drop, 240px));
 }
 
 .topbar-logo {
