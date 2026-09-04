@@ -118,10 +118,10 @@ a {
 }
 
 .menu-toggle-feather {
-  width: 26px;
+  width: 44px;
   height: auto;
   pointer-events: none;
-  transition: transform 0.25s ease;
+  transition: transform 1s ease;
 }
 
 .menu-toggle-feather.open {
