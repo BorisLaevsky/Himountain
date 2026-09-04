@@ -33,12 +33,14 @@ document.querySelectorAll('.shop-images').forEach(gallery => {
 const menuToggle = document.getElementById('menuToggle');
 const dropdownMenu = document.getElementById('dropdownMenu');
 const dropdownBackdrop = document.getElementById('dropdownBackdrop');
+const menuToggleFeather = document.getElementById('menuToggleFeather');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
   function closeDropdown() {
     menuToggle.classList.remove('open');
     dropdownMenu.classList.remove('open');
     dropdownBackdrop.classList.remove('open');
+    menuToggleFeather?.classList.remove('open');
     menuToggle.setAttribute('aria-expanded', 'false');
   }
 
@@ -46,6 +48,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggle.classList.add('open');
     dropdownMenu.classList.add('open');
     dropdownBackdrop.classList.add('open');
+    menuToggleFeather?.classList.add('open');
     menuToggle.setAttribute('aria-expanded', 'true');
   }
 

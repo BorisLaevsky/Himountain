@@ -122,6 +122,28 @@ a {
   transform: translateY(-7px) rotate(-45deg);
 }
 
+.menu-toggle-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.menu-toggle-feather {
+  position: absolute;
+  top: -4px;
+  right: -18px;
+  width: 20px;
+  height: auto;
+  pointer-events: none;
+  transform: rotate(15deg) translateY(0);
+  transition: transform 0.5s cubic-bezier(0.34, 0.8, 0.36, 1);
+}
+
+.menu-toggle-feather.open {
+  transform: rotate(50deg) translateY(52px);
+}
+
 .topbar-logo {
   position: absolute;
   left: 50%;
@@ -154,8 +176,6 @@ a {
   max-width: 82vw;
   max-height: calc(100vh - 96px);
   overflow-y: auto;
-  background: #fff;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
   padding: 24px;
   box-sizing: border-box;
   display: flex;
