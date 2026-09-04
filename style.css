@@ -832,6 +832,28 @@ figure.video-portrait video {
     gap: 20px;
   }
 
+  /* Soft white glow behind the menu content on mobile, since the dropdown
+     itself has no background — without it, text/logos can blend into
+     whatever busy image or content is behind them on a small screen. Grows
+     in alongside the menu opening rather than appearing as a hard card. */
+  .dropdown-menu::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.65) 55%, rgba(255, 255, 255, 0) 100%);
+    z-index: -1;
+    opacity: 0;
+    transform: scale(0.6);
+    transform-origin: 20% 15%;
+    transition: opacity 1s ease, transform 1s ease;
+    pointer-events: none;
+  }
+
+  .dropdown-menu.open::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
   .dropdown-backdrop {
     inset: 76px 0 0 0;
   }
