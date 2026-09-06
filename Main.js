@@ -35,6 +35,7 @@ const dropdownMenu = document.getElementById('dropdownMenu');
 const dropdownBackdrop = document.getElementById('dropdownBackdrop');
 const menuToggleFeather = document.getElementById('menuToggleFeather');
 const menuToggleLabel = menuToggle?.querySelector('.menu-toggle-label');
+const dropdownGlow = document.getElementById('dropdownGlow');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
   // The feather is only meant to look "alive" (gif) while it's actually
@@ -76,6 +77,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggle.classList.remove('open');
     dropdownMenu.classList.remove('open');
     dropdownBackdrop.classList.remove('open');
+    dropdownGlow?.classList.remove('open');
     menuToggleFeather?.classList.remove('open');
     menuToggle.setAttribute('aria-expanded', 'false');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Menu';
@@ -114,6 +116,19 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     // topbar padding/layout.
     const btnRect = menuToggle.getBoundingClientRect();
     dropdownMenu.style.left = btnRect.left + 'px';
+
+    // Size/position the mobile glow element to match the dropdown's own box
+    // exactly (its box-shadow does the bleeding-into-transparency beyond
+    // that). Measured while still closed, so +12 compensates for the menu's
+    // closed-state translateY(-12px) — left/width/height aren't affected by
+    // that transform, only the vertical position is.
+    if (dropdownGlow) {
+      const menuRect = dropdownMenu.getBoundingClientRect();
+      dropdownGlow.style.left = menuRect.left + 'px';
+      dropdownGlow.style.top = (menuRect.top + 12) + 'px';
+      dropdownGlow.style.width = menuRect.width + 'px';
+      dropdownGlow.style.height = menuRect.height + 'px';
+    }
   }
 
   function openDropdown() {
@@ -124,6 +139,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggle.classList.add('open');
     dropdownMenu.classList.add('open');
     dropdownBackdrop.classList.add('open');
+    dropdownGlow?.classList.add('open');
     menuToggleFeather?.classList.add('open');
     menuToggleFeather?.classList.add('feather-live');
     menuToggle.setAttribute('aria-expanded', 'true');
