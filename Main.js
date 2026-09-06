@@ -38,41 +38,6 @@ const menuToggleLabel = menuToggle?.querySelector('.menu-toggle-label');
 const dropdownGlow = document.getElementById('dropdownGlow');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
-  // The feather is only meant to look "alive" (gif) while it's actually
-  // sliding — static at rest in both the closed (top) and open (bottom)
-  // positions.
-  //
-  // On open: the crossfade to gif (0.3s, default CSS transition) starts
-  // immediately and finishes early while the 1s slide is still running,
-  // which reads well since it's a quick change near the start of visible
-  // motion. Once the slide lands at the bottom, a timeout fades it back to
-  // static using that same quick default transition — nothing else is
-  // moving at that point, so a short clean fade reads as "settling" rather
-  // than a lag.
-  //
-  // On close: mirroring the open behavior as a short window near the *end*
-  // of the slide doesn't read the same way, because it lands right as the
-  // slide's own easing is already decelerating toward a stop, so the fade
-  // looks disconnected from the motion (too early/abrupt either way).
-  // Instead, close fades across the *entire* slide using the exact same
-  // duration and easing as the slide itself, so the two are mathematically
-  // locked together frame for frame.
-  const FEATHER_SLIDE_MS = 1000;
-  let featherFadeTimeout = null;
-
-  function resetFeatherFadeStyle() {
-    menuToggleFeather?.querySelectorAll('img').forEach((img) => {
-      img.style.transition = '';
-    });
-  }
-
-  function clearPendingFeatherHandler() {
-    if (featherFadeTimeout !== null) {
-      clearTimeout(featherFadeTimeout);
-      featherFadeTimeout = null;
-    }
-  }
-
   function closeDropdown() {
     menuToggle.classList.remove('open');
     dropdownMenu.classList.remove('open');
@@ -81,18 +46,6 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggleFeather?.classList.remove('open');
     menuToggle.setAttribute('aria-expanded', 'false');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Menu';
-
-    clearPendingFeatherHandler();
-    if (menuToggleFeather) {
-      menuToggleFeather.querySelectorAll('img').forEach((img) => {
-        img.style.transition = `opacity ${FEATHER_SLIDE_MS}ms ease`;
-      });
-      menuToggleFeather.classList.remove('feather-live');
-      featherFadeTimeout = setTimeout(() => {
-        resetFeatherFadeStyle(); // back to the quick 0.3s CSS default for next open
-        featherFadeTimeout = null;
-      }, FEATHER_SLIDE_MS);
-    }
   }
 
   function positionFeatherForOpen() {
@@ -136,8 +89,6 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
   }
 
   function openDropdown() {
-    clearPendingFeatherHandler();
-    resetFeatherFadeStyle();
     positionDropdownMenu();
     positionFeatherForOpen();
     menuToggle.classList.add('open');
@@ -145,21 +96,8 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     dropdownBackdrop.classList.add('open');
     dropdownGlow?.classList.add('open');
     menuToggleFeather?.classList.add('open');
-    menuToggleFeather?.classList.add('feather-live');
     menuToggle.setAttribute('aria-expanded', 'true');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Close';
-
-    // The gif is only meant to be visible while the feather is actually in
-    // motion. It fades in quickly (0.3s, default CSS transition) right as
-    // the slide starts, then once the slide has landed at the bottom, fade
-    // it back to static too — so it's static at rest in both the closed and
-    // open positions, and gif only in between while sliding.
-    if (menuToggleFeather) {
-      featherFadeTimeout = setTimeout(() => {
-        menuToggleFeather.classList.remove('feather-live');
-        featherFadeTimeout = null;
-      }, FEATHER_SLIDE_MS);
-    }
   }
 
   menuToggle.addEventListener('click', (e) => {
