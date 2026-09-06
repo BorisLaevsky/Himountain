@@ -839,6 +839,24 @@ figure.video-portrait video {
 }
 
 @media (max-width: 600px) {
+  /* At narrow widths the menu-toggle-wrap (Menu/Close label + feather) is
+     wide enough to run into the logo, which is otherwise absolutely
+     centered in the topbar independent of the flex layout beside it — the
+     two are on a collision course as the viewport narrows no matter how
+     either is sized. Simplest permanent fix: drop the centering here and
+     let the logo sit as a normal flex item on the right, with the toggle
+     on the left — a standard small-screen header layout, and one where
+     overlap isn't possible since the two are laid out in-flow instead of
+     independently positioned. */
+  .site-topbar {
+    justify-content: space-between;
+  }
+
+  .topbar-logo {
+    position: static;
+    transform: none;
+  }
+
   .container {
     margin: 32px auto;
   }
