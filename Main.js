@@ -117,17 +117,21 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     const btnRect = menuToggle.getBoundingClientRect();
     dropdownMenu.style.left = btnRect.left + 'px';
 
-    // Size/position the mobile glow element to match the dropdown's own box
-    // exactly (its box-shadow does the bleeding-into-transparency beyond
-    // that). Measured while still closed, so +12 compensates for the menu's
+    // The glow element is sized *larger* than the dropdown's own box by a
+    // margin, then blurred as a whole (see CSS) — the margin is where the
+    // blur fades the white fill to nothing, so the edge genuinely dissolves
+    // rather than being shadowed from a hard-edged shape. The margin should
+    // exceed the blur radius so the center (behind the actual text) stays
+    // solid. Measured while still closed, so +12 compensates for the menu's
     // closed-state translateY(-12px) — left/width/height aren't affected by
     // that transform, only the vertical position is.
     if (dropdownGlow) {
+      const GLOW_MARGIN = 40;
       const menuRect = dropdownMenu.getBoundingClientRect();
-      dropdownGlow.style.left = menuRect.left + 'px';
-      dropdownGlow.style.top = (menuRect.top + 12) + 'px';
-      dropdownGlow.style.width = menuRect.width + 'px';
-      dropdownGlow.style.height = menuRect.height + 'px';
+      dropdownGlow.style.left = (menuRect.left - GLOW_MARGIN) + 'px';
+      dropdownGlow.style.top = (menuRect.top + 12 - GLOW_MARGIN) + 'px';
+      dropdownGlow.style.width = (menuRect.width + GLOW_MARGIN * 2) + 'px';
+      dropdownGlow.style.height = (menuRect.height + GLOW_MARGIN * 2) + 'px';
     }
   }
 

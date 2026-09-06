@@ -874,17 +874,15 @@ figure.video-portrait video {
      rather than a flat card or a glow that fades out before it reaches the
      corners. See the .dropdown-glow rules below. */
   .dropdown-glow {
+    /* box-shadow always starts from a hard-edged shape, so there's an
+       inherent seam where the solid fill meets the shadow no matter how
+       large the blur is. A real dissolve instead blurs the box's own edges
+       directly: this element is sized larger than the menu (see JS) with a
+       plain white fill, then blurred as a whole — the excess margin is
+       where the blur eats into the fill and fades to nothing, while the
+       center (behind the actual text) stays solid. */
     background: #fff;
-    /* Several stacked shadows, growing in radius and dropping in opacity,
-       approximate a much smoother/more gradual falloff than one or two
-       shadows can — the goal is no perceptible rectangle at all, just a
-       glow that thins out gradually over a wide area. */
-    box-shadow:
-      0 0 20px 0px rgba(255, 255, 255, 0.95),
-      0 0 60px 10px rgba(255, 255, 255, 0.75),
-      0 0 110px 30px rgba(255, 255, 255, 0.5),
-      0 0 170px 60px rgba(255, 255, 255, 0.28),
-      0 0 240px 90px rgba(255, 255, 255, 0.12);
+    filter: blur(30px);
   }
 
   .dropdown-backdrop {
