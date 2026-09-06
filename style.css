@@ -94,6 +94,9 @@ a {
   height: 26px;
   background: none;
   border: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
   font-family: inherit;
   cursor: pointer;
   padding: 0;
@@ -872,9 +875,16 @@ figure.video-portrait video {
      corners. See the .dropdown-glow rules below. */
   .dropdown-glow {
     background: #fff;
+    /* Several stacked shadows, growing in radius and dropping in opacity,
+       approximate a much smoother/more gradual falloff than one or two
+       shadows can — the goal is no perceptible rectangle at all, just a
+       glow that thins out gradually over a wide area. */
     box-shadow:
-      0 0 30px 18px rgba(255, 255, 255, 0.9),
-      0 0 70px 40px rgba(255, 255, 255, 0.45);
+      0 0 20px 0px rgba(255, 255, 255, 0.95),
+      0 0 60px 10px rgba(255, 255, 255, 0.75),
+      0 0 110px 30px rgba(255, 255, 255, 0.5),
+      0 0 170px 60px rgba(255, 255, 255, 0.28),
+      0 0 240px 90px rgba(255, 255, 255, 0.12);
   }
 
   .dropdown-backdrop {
