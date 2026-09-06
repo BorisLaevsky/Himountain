@@ -44,6 +44,8 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggleFeather?.classList.remove('open');
     menuToggle.setAttribute('aria-expanded', 'false');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Menu';
+    // Back to the static feather at rest.
+    if (menuToggleFeather) menuToggleFeather.src = '../assets/feather_static.png';
   }
 
   function positionFeatherForOpen() {
@@ -78,6 +80,8 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggleFeather?.classList.add('open');
     menuToggle.setAttribute('aria-expanded', 'true');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Close';
+    // Swap to the animated gif while the menu is open.
+    if (menuToggleFeather) menuToggleFeather.src = '../assets/feather.gif';
   }
 
   menuToggle.addEventListener('click', (e) => {

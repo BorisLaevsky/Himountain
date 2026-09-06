@@ -140,16 +140,6 @@ a {
   display: block;
 }
 
-.topbar-logo-feather {
-  position: absolute;
-  bottom: -18px;
-  right: -14px;
-  width: 42px;
-  height: auto;
-  pointer-events: none;
-  transform: rotate(-20deg);
-}
-
 .dropdown-menu {
   position: fixed;
   top: 76px;
