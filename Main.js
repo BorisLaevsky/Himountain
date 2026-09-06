@@ -37,18 +37,27 @@ const menuToggleFeather = document.getElementById('menuToggleFeather');
 const menuToggleLabel = menuToggle?.querySelector('.menu-toggle-label');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
-  // The slide takes 1s; the gif/static crossfade takes 0.3s. On open, the
-  // crossfade starts immediately and finishes early while the slide is
-  // still running, which reads fine. On close we want the mirror image of
-  // that feel: the fade back to static should land in the *last* 0.3s of
-  // the slide, so both finish together, rather than firing the instant you
-  // click (feather looks static while still visibly sliding) or firing only
-  // after the slide has already stopped (a separate, tacked-on-looking
-  // delay). Timed with setTimeout rather than transitionend so it's tied to
-  // that specific point in the slide, not just "whenever it happens to end".
+  // On open, the gif/static crossfade (0.3s) starts immediately and finishes
+  // early while the 1s slide is still running — that reads well because it's
+  // a short, snappy change happening near the start of the motion. Trying to
+  // mirror that as a short window near the *end* of the close slide doesn't
+  // read the same way, because it's landing right as the slide's own easing
+  // is already decelerating toward a stop, so the fade looks slightly
+  // disconnected from the motion either way (too early/abrupt, or a
+  // trailing afterthought).
+  //
+  // Instead, on close, fade across the *entire* slide using the exact same
+  // duration and easing as the slide itself, so the two are mathematically
+  // locked together frame for frame — there's no separate window to land
+  // wrong, they simply finish at the same instant by construction.
   const FEATHER_SLIDE_MS = 1000;
-  const FEATHER_FADE_MS = 300;
   let featherFadeTimeout = null;
+
+  function resetFeatherFadeStyle() {
+    menuToggleFeather?.querySelectorAll('img').forEach((img) => {
+      img.style.transition = '';
+    });
+  }
 
   function clearPendingFeatherHandler() {
     if (featherFadeTimeout !== null) {
@@ -67,10 +76,14 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
 
     clearPendingFeatherHandler();
     if (menuToggleFeather) {
+      menuToggleFeather.querySelectorAll('img').forEach((img) => {
+        img.style.transition = `opacity ${FEATHER_SLIDE_MS}ms ease`;
+      });
+      menuToggleFeather.classList.remove('feather-live');
       featherFadeTimeout = setTimeout(() => {
-        menuToggleFeather.classList.remove('feather-live');
+        resetFeatherFadeStyle(); // back to the quick 0.3s CSS default for next open
         featherFadeTimeout = null;
-      }, FEATHER_SLIDE_MS - FEATHER_FADE_MS);
+      }, FEATHER_SLIDE_MS);
     }
   }
 
@@ -99,6 +112,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
 
   function openDropdown() {
     clearPendingFeatherHandler();
+    resetFeatherFadeStyle();
     positionDropdownMenu();
     positionFeatherForOpen();
     menuToggle.classList.add('open');
