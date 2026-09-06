@@ -37,19 +37,24 @@ const menuToggleFeather = document.getElementById('menuToggleFeather');
 const menuToggleLabel = menuToggle?.querySelector('.menu-toggle-label');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
-  // The gif should keep playing for as long as the feather is actually
-  // sliding, in either direction, and only switch back to the static image
-  // once it has fully come to rest closed. So "showing the gif" is tracked
-  // separately from "open" (which just drives the slide position) — on
-  // close we wait for the slide's transitionend before dropping back to
-  // the static image, instead of switching the instant the click happens.
-  let featherSlideDoneHandler = null;
+  // The slide takes 1s; the gif/static crossfade takes 0.3s. On open, the
+  // crossfade starts immediately and finishes early while the slide is
+  // still running, which reads fine. On close we want the mirror image of
+  // that feel: the fade back to static should land in the *last* 0.3s of
+  // the slide, so both finish together, rather than firing the instant you
+  // click (feather looks static while still visibly sliding) or firing only
+  // after the slide has already stopped (a separate, tacked-on-looking
+  // delay). Timed with setTimeout rather than transitionend so it's tied to
+  // that specific point in the slide, not just "whenever it happens to end".
+  const FEATHER_SLIDE_MS = 1000;
+  const FEATHER_FADE_MS = 300;
+  let featherFadeTimeout = null;
 
   function clearPendingFeatherHandler() {
-    if (featherSlideDoneHandler && menuToggleFeather) {
-      menuToggleFeather.removeEventListener('transitionend', featherSlideDoneHandler);
+    if (featherFadeTimeout !== null) {
+      clearTimeout(featherFadeTimeout);
+      featherFadeTimeout = null;
     }
-    featherSlideDoneHandler = null;
   }
 
   function closeDropdown() {
@@ -62,19 +67,10 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
 
     clearPendingFeatherHandler();
     if (menuToggleFeather) {
-      featherSlideDoneHandler = (e) => {
-        if (e.target !== menuToggleFeather || e.propertyName !== 'transform') return;
-        // Snap to static instantly here rather than fading — the crossfade
-        // is only meant for the gif appearing when the menu opens.
-        menuToggleFeather.classList.add('no-fade');
+      featherFadeTimeout = setTimeout(() => {
         menuToggleFeather.classList.remove('feather-live');
-        void menuToggleFeather.offsetWidth; // force the instant style to apply
-        requestAnimationFrame(() => {
-          menuToggleFeather.classList.remove('no-fade');
-        });
-        clearPendingFeatherHandler();
-      };
-      menuToggleFeather.addEventListener('transitionend', featherSlideDoneHandler);
+        featherFadeTimeout = null;
+      }, FEATHER_SLIDE_MS - FEATHER_FADE_MS);
     }
   }
 
