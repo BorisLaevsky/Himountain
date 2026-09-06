@@ -141,11 +141,11 @@ a {
   opacity: 0;
 }
 
-.menu-toggle-feather.open .feather-static {
+.menu-toggle-feather.feather-live .feather-static {
   opacity: 0;
 }
 
-.menu-toggle-feather.open .feather-gif {
+.menu-toggle-feather.feather-live .feather-gif {
   opacity: 1;
 }
 

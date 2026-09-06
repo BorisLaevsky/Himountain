@@ -37,6 +37,21 @@ const menuToggleFeather = document.getElementById('menuToggleFeather');
 const menuToggleLabel = menuToggle?.querySelector('.menu-toggle-label');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
+  // The gif should keep playing for as long as the feather is actually
+  // sliding, in either direction, and only switch back to the static image
+  // once it has fully come to rest closed. So "showing the gif" is tracked
+  // separately from "open" (which just drives the slide position) — on
+  // close we wait for the slide's transitionend before dropping back to
+  // the static image, instead of switching the instant the click happens.
+  let featherSlideDoneHandler = null;
+
+  function clearPendingFeatherHandler() {
+    if (featherSlideDoneHandler && menuToggleFeather) {
+      menuToggleFeather.removeEventListener('transitionend', featherSlideDoneHandler);
+    }
+    featherSlideDoneHandler = null;
+  }
+
   function closeDropdown() {
     menuToggle.classList.remove('open');
     dropdownMenu.classList.remove('open');
@@ -44,6 +59,16 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggleFeather?.classList.remove('open');
     menuToggle.setAttribute('aria-expanded', 'false');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Menu';
+
+    clearPendingFeatherHandler();
+    if (menuToggleFeather) {
+      featherSlideDoneHandler = (e) => {
+        if (e.target !== menuToggleFeather || e.propertyName !== 'transform') return;
+        menuToggleFeather.classList.remove('feather-live');
+        clearPendingFeatherHandler();
+      };
+      menuToggleFeather.addEventListener('transitionend', featherSlideDoneHandler);
+    }
   }
 
   function positionFeatherForOpen() {
@@ -70,12 +95,14 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
   }
 
   function openDropdown() {
+    clearPendingFeatherHandler();
     positionDropdownMenu();
     positionFeatherForOpen();
     menuToggle.classList.add('open');
     dropdownMenu.classList.add('open');
     dropdownBackdrop.classList.add('open');
     menuToggleFeather?.classList.add('open');
+    menuToggleFeather?.classList.add('feather-live');
     menuToggle.setAttribute('aria-expanded', 'true');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Close';
   }
