@@ -149,6 +149,12 @@ a {
   opacity: 1;
 }
 
+/* Snap back to static the instant the slide finishes closing, instead of
+   fading — the fade is only wanted when the gif first appears on open. */
+.menu-toggle-feather.no-fade img {
+  transition: none;
+}
+
 .topbar-logo {
   position: absolute;
   left: 50%;

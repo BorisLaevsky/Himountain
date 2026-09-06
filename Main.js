@@ -64,7 +64,14 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     if (menuToggleFeather) {
       featherSlideDoneHandler = (e) => {
         if (e.target !== menuToggleFeather || e.propertyName !== 'transform') return;
+        // Snap to static instantly here rather than fading — the crossfade
+        // is only meant for the gif appearing when the menu opens.
+        menuToggleFeather.classList.add('no-fade');
         menuToggleFeather.classList.remove('feather-live');
+        void menuToggleFeather.offsetWidth; // force the instant style to apply
+        requestAnimationFrame(() => {
+          menuToggleFeather.classList.remove('no-fade');
+        });
         clearPendingFeatherHandler();
       };
       menuToggleFeather.addEventListener('transitionend', featherSlideDoneHandler);
