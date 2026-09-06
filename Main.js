@@ -38,7 +38,23 @@ const menuToggleLabel = menuToggle?.querySelector('.menu-toggle-label');
 const dropdownGlow = document.getElementById('dropdownGlow');
 
 if (menuToggle && dropdownMenu && dropdownBackdrop) {
+  // Everything here (the menu slide, the feather drop, the glow) runs on a
+  // 1s CSS transition. If a click is allowed to interrupt that transition
+  // mid-flight, the next open/close re-measures positions with
+  // getBoundingClientRect() while the transform is still partway animated —
+  // which reads a position that's neither the true open nor true closed
+  // rest state, and produces a wrong drop distance. Rapid clicking then
+  // compounds that error each time, which is what made the feather appear
+  // to drift and stop stuck in the middle instead of landing at the top or
+  // bottom. Locking out clicks until the current transition finishes (same
+  // 1s duration as the CSS) keeps every measurement anchored to a genuine
+  // resting state.
+  const ANIMATION_MS = 1000;
+  let isAnimating = false;
+
   function closeDropdown() {
+    if (isAnimating || !dropdownMenu.classList.contains('open')) return;
+    isAnimating = true;
     menuToggle.classList.remove('open');
     dropdownMenu.classList.remove('open');
     dropdownBackdrop.classList.remove('open');
@@ -46,6 +62,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggleFeather?.classList.remove('open');
     menuToggle.setAttribute('aria-expanded', 'false');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Menu';
+    setTimeout(() => { isAnimating = false; }, ANIMATION_MS);
   }
 
   function positionFeatherForOpen() {
@@ -77,18 +94,23 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     // exceed the blur radius so the center (behind the actual text) stays
     // solid. Measured while still closed, so +12 compensates for the menu's
     // closed-state translateY(-12px) — left/width/height aren't affected by
-    // that transform, only the vertical position is.
+    // that transform, only the vertical position is. The bottom edge gets
+    // extra reach beyond the base margin so the glow keeps covering the
+    // feather, which rests below the menu's own bottom edge.
     if (dropdownGlow) {
       const GLOW_MARGIN = 40;
+      const GLOW_MARGIN_BOTTOM = 90;
       const menuRect = dropdownMenu.getBoundingClientRect();
       dropdownGlow.style.left = (menuRect.left - GLOW_MARGIN) + 'px';
       dropdownGlow.style.top = (menuRect.top + 12 - GLOW_MARGIN) + 'px';
       dropdownGlow.style.width = (menuRect.width + GLOW_MARGIN * 2) + 'px';
-      dropdownGlow.style.height = (menuRect.height + GLOW_MARGIN * 2) + 'px';
+      dropdownGlow.style.height = (menuRect.height + GLOW_MARGIN + GLOW_MARGIN_BOTTOM) + 'px';
     }
   }
 
   function openDropdown() {
+    if (isAnimating || dropdownMenu.classList.contains('open')) return;
+    isAnimating = true;
     positionDropdownMenu();
     positionFeatherForOpen();
     menuToggle.classList.add('open');
@@ -98,6 +120,7 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     menuToggleFeather?.classList.add('open');
     menuToggle.setAttribute('aria-expanded', 'true');
     if (menuToggleLabel) menuToggleLabel.textContent = 'Close';
+    setTimeout(() => { isAnimating = false; }, ANIMATION_MS);
   }
 
   menuToggle.addEventListener('click', (e) => {

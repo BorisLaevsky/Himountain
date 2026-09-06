@@ -817,6 +817,27 @@ figure.video-portrait video {
   }
 }
 
+/* A separate glow element (#dropdownGlow, sized/positioned via JS to
+   match the dropdown's own box) sits behind the menu content on touch
+   devices — tablets included, not just narrow phone widths — where the
+   transparent menu is more likely to sit over a busy background: solid
+   white exactly where the menu is, softly dissolving into transparency
+   beyond its edges, like a light source behind the panel rather than a
+   flat card. */
+@media (max-width: 1024px) {
+  .dropdown-glow {
+    /* box-shadow always starts from a hard-edged shape, so there's an
+       inherent seam where the solid fill meets the shadow no matter how
+       large the blur is. A real dissolve instead blurs the box's own edges
+       directly: this element is sized larger than the menu (see JS) with a
+       plain white fill, then blurred as a whole — the excess margin is
+       where the blur eats into the fill and fades to nothing, while the
+       center (behind the actual text) stays solid. */
+    background: #fff;
+    filter: blur(30px);
+  }
+}
+
 @media (max-width: 600px) {
   .container {
     margin: 32px auto;
@@ -852,24 +873,6 @@ figure.video-portrait video {
     max-height: calc(100vh - 96px);
     padding: 20px;
     gap: 20px;
-  }
-
-  /* A separate glow element (#dropdownGlow, sized/positioned via JS to
-     match the dropdown's own box) sits behind the menu content on mobile:
-     solid white exactly where the menu is, softly dissolving into
-     transparency beyond its edges — like a light source behind the panel,
-     rather than a flat card or a glow that fades out before it reaches the
-     corners. See the .dropdown-glow rules below. */
-  .dropdown-glow {
-    /* box-shadow always starts from a hard-edged shape, so there's an
-       inherent seam where the solid fill meets the shadow no matter how
-       large the blur is. A real dissolve instead blurs the box's own edges
-       directly: this element is sized larger than the menu (see JS) with a
-       plain white fill, then blurred as a whole — the excess margin is
-       where the blur eats into the fill and fades to nothing, while the
-       center (behind the actual text) stays solid. */
-    background: #fff;
-    filter: blur(30px);
   }
 
   .dropdown-backdrop {
