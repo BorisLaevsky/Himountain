@@ -845,26 +845,18 @@ figure.video-portrait video {
     gap: 20px;
   }
 
-  /* Soft white glow behind the menu content on mobile, since the dropdown
-     itself has no background — without it, text/logos can blend into
-     whatever busy image or content is behind them on a small screen. Grows
-     in alongside the menu opening rather than appearing as a hard card. */
-  .dropdown-menu::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.65) 55%, rgba(255, 255, 255, 0) 100%);
-    z-index: -1;
-    opacity: 0;
-    transform: scale(0.6);
-    transform-origin: 20% 15%;
-    transition: opacity 1s ease, transform 1s ease;
-    pointer-events: none;
-  }
-
-  .dropdown-menu.open::before {
-    opacity: 1;
-    transform: scale(1);
+  /* Frosted-glass panel behind the menu content on mobile, since the
+     dropdown has no background on desktop — without it, text/logos can
+     blend into whatever busy image or content sits behind them on a small
+     screen. A blur (rather than a flat white card) keeps it translucent and
+     in keeping with the rest of the site, but guarantees legibility no
+     matter what's underneath, uniformly across the whole panel rather than
+     fading out toward the edges. It fades/slides in with the same
+     transition the menu itself already uses, so nothing new to sync. */
+  .dropdown-menu {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
   }
 
   .dropdown-backdrop {
