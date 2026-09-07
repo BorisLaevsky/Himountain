@@ -82,7 +82,14 @@ a {
   display: flex;
   align-items: center;
   height: 76px;
-  padding: 0 24px;
+  /* Fluid instead of a stepped breakpoint value: scales continuously from
+     16px at a 320px-wide screen up to 24px by the time the screen reaches
+     600px, then holds at 24px beyond that (clamp's own max). Paired with
+     the feather/label/gap below, all four use the same 320→600 anchor
+     range so the toggle and the (fixed-size, always-centered) logo never
+     get closer together at any width in between than they are at the two
+     ends — verified with a real render, see menu-toggle-feather below. */
+  padding: 0 clamp(16px, calc(6.86px + 2.86vw), 24px);
   background: #fff;
 }
 
@@ -104,7 +111,7 @@ a {
 }
 
 .menu-toggle-label {
-  font-size: 1.15em;
+  font-size: clamp(14.4px, calc(9.83px + 1.43vw), 18.4px);
   letter-spacing: 0.02em;
   color: #000;
   text-decoration: underline;
@@ -114,15 +121,25 @@ a {
 .menu-toggle-wrap {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(4px, calc(-0.57px + 1.43vw), 8px);
   flex-shrink: 0;
 }
 
 .menu-toggle-feather {
   position: relative;
   display: block;
-  width: 44px;
-  height: 44px;
+  /* Scales from 20px (at a 320px-wide screen) up to its full 44px (by
+     600px and beyond) instead of jumping between two fixed sizes at the
+     600px breakpoint. The four fluid values here (topbar padding above,
+     this, the label font-size, and the wrap gap) all share the same
+     320→600 viewport range, which keeps their combined width growing in
+     a straight line — checked against the logo's own position (fixed
+     size, always centered, so it moves at a constant rate as the screen
+     widens) with a real headless-Chromium render at 320/350/375/400/425/
+     450/475/500/525/550/575/600/650/700px: the gap between the toggle and
+     the logo never closes below where it is at 320px. */
+  width: clamp(20px, calc(-7.43px + 8.57vw), 44px);
+  height: clamp(20px, calc(-7.43px + 8.57vw), 44px);
   pointer-events: none;
   transition: transform 1s ease;
 }
@@ -839,31 +856,9 @@ figure.video-portrait video {
 }
 
 @media (max-width: 600px) {
-  /* Keep the logo centered (inherits the absolute-centering from the base
-     rule below — no override needed here anymore) and shrink the toggle
-     instead so there's enough clear space between it and the logo at
-     every width down to 320px. Checked with a real headless-Chromium
-     render at 320/360/375/390/414/428 using the actual Cormorant font and
-     logo file (not estimated) — this combination (16px side padding, 20px
-     feather, 0.9em label, 4px gap) keeps a positive gap at all of them,
-     narrowest case ~8px at 320px. */
-  .site-topbar {
-    padding: 0 16px;
-  }
-
-  .menu-toggle-wrap {
-    gap: 4px;
-  }
-
-  .menu-toggle-label {
-    font-size: 0.9em;
-  }
-
-  .menu-toggle-feather {
-    width: 20px;
-    height: 20px;
-  }
-
+  /* The topbar padding, toggle size, label size and gap are now fluid
+     (see the base rules above) so there's nothing left to override here
+     for those. */
   .container {
     margin: 32px auto;
   }
