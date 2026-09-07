@@ -81,6 +81,19 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
   }
 
   function positionDropdownMenu() {
+    // The topbar's own height isn't a fixed constant — on narrow screens
+    // it stacks the logo above the menu button/feather (see CSS), so it's
+    // taller there than on desktop. Rather than hardcode two different
+    // pixel values, measure the topbar's actual rendered bottom edge each
+    // time and hang the dropdown (and its backdrop) from that.
+    const topbar = document.querySelector('.site-topbar');
+    if (topbar) {
+      const topbarBottom = topbar.getBoundingClientRect().bottom;
+      dropdownMenu.style.top = topbarBottom + 'px';
+      dropdownMenu.style.maxHeight = `calc(100vh - ${topbarBottom + 20}px)`;
+      if (dropdownBackdrop) dropdownBackdrop.style.top = topbarBottom + 'px';
+    }
+
     // Line the dropdown's left edge up with the menu button's actual left
     // edge, so it always drops straight down from the button regardless of
     // topbar padding/layout.

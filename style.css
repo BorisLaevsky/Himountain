@@ -843,18 +843,43 @@ figure.video-portrait video {
      wide enough to run into the logo, which is otherwise absolutely
      centered in the topbar independent of the flex layout beside it — the
      two are on a collision course as the viewport narrows no matter how
-     either is sized. Simplest permanent fix: drop the centering here and
-     let the logo sit as a normal flex item on the right, with the toggle
-     on the left — a standard small-screen header layout, and one where
-     overlap isn't possible since the two are laid out in-flow instead of
-     independently positioned. */
+     either is sized. Keep the logo centered by stacking instead of
+     shoving it aside: logo on its own row, the toggle centered directly
+     under it on a second row (via flexbox `order`, no HTML change). Sized
+     down and tightened (smaller feather, smaller gaps) so the second row
+     reads as a slim caption line under the logo rather than doubling the
+     topbar's visual weight. The topbar's height is no longer a fixed
+     constant here (see positionDropdownMenu in Main.js, which measures it
+     live instead of assuming 76px). */
   .site-topbar {
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 10px 24px 12px;
+    gap: 4px;
   }
 
   .topbar-logo {
     position: static;
     transform: none;
+  }
+
+  .topbar-logo img:first-of-type {
+    height: 36px;
+  }
+
+  .menu-toggle-wrap {
+    order: 2;
+    gap: 4px;
+  }
+
+  .menu-toggle-label {
+    font-size: 1em;
+  }
+
+  .menu-toggle-feather {
+    width: 24px;
+    height: 24px;
   }
 
   .container {
@@ -887,14 +912,8 @@ figure.video-portrait video {
     left: 16px;
     width: calc(100vw - 32px);
     max-width: 300px;
-    top: 76px;
-    max-height: calc(100vh - 96px);
     padding: 20px;
     gap: 20px;
-  }
-
-  .dropdown-backdrop {
-    inset: 76px 0 0 0;
   }
 
   .sidebar-stories a.story-logo-link {
