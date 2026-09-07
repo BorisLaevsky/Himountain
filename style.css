@@ -857,6 +857,22 @@ figure.video-portrait video {
     transform: none;
   }
 
+  /* Shrink the toggle itself (feather + label) so it reads as a light
+     touch next to the logo rather than a second heavy element competing
+     with it for attention on a narrow header. */
+  .menu-toggle-wrap {
+    gap: 6px;
+  }
+
+  .menu-toggle-label {
+    font-size: 1em;
+  }
+
+  .menu-toggle-feather {
+    width: 28px;
+    height: 28px;
+  }
+
   .container {
     margin: 32px auto;
   }
