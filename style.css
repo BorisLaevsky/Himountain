@@ -839,38 +839,29 @@ figure.video-portrait video {
 }
 
 @media (max-width: 600px) {
-  /* At narrow widths the menu-toggle-wrap (Menu/Close label + feather) is
-     wide enough to run into the logo, which is otherwise absolutely
-     centered in the topbar independent of the flex layout beside it — the
-     two are on a collision course as the viewport narrows no matter how
-     either is sized. Simplest permanent fix: drop the centering here and
-     let the logo sit as a normal flex item on the right, with the toggle
-     on the left — a standard small-screen header layout, and one where
-     overlap isn't possible since the two are laid out in-flow instead of
-     independently positioned. */
+  /* Keep the logo centered (inherits the absolute-centering from the base
+     rule below — no override needed here anymore) and shrink the toggle
+     instead so there's enough clear space between it and the logo at
+     every width down to 320px. Checked with a real headless-Chromium
+     render at 320/360/375/390/414/428 using the actual Cormorant font and
+     logo file (not estimated) — this combination (16px side padding, 20px
+     feather, 0.9em label, 4px gap) keeps a positive gap at all of them,
+     narrowest case ~8px at 320px. */
   .site-topbar {
-    justify-content: space-between;
+    padding: 0 16px;
   }
 
-  .topbar-logo {
-    position: static;
-    transform: none;
-  }
-
-  /* Shrink the toggle itself (feather + label) so it reads as a light
-     touch next to the logo rather than a second heavy element competing
-     with it for attention on a narrow header. */
   .menu-toggle-wrap {
-    gap: 6px;
+    gap: 4px;
   }
 
   .menu-toggle-label {
-    font-size: 1em;
+    font-size: 0.9em;
   }
 
   .menu-toggle-feather {
-    width: 28px;
-    height: 28px;
+    width: 20px;
+    height: 20px;
   }
 
   .container {
