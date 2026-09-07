@@ -165,7 +165,10 @@ a {
 }
 
 .topbar-logo img:first-of-type {
-  height: 46px;
+  /* Same 320→600 fluid range as the toggle (padding/feather/label/gap
+     above), so the logo shrinks in step with it rather than staying fixed
+     while everything around it scales. */
+  height: clamp(34px, calc(20.29px + 4.29vw), 46px);
   width: auto;
   display: block;
 }
