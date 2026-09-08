@@ -321,7 +321,8 @@
                     data-title="Wayfinding signs" 
                     data-year="2025" 
                     data-medium="" 
-                    data-dimensions="">
+                    data-dimensions=""
+                    data-peripheral="true">
                 <span class="hover-term-label">signs</span>
                 <span class="hover-preview"><img src="images/down_to_earth/tommy1.jpg" alt="Tommy sign 1">
                                             <img src="images/down_to_earth/tommy2.jpg" alt="Tommy sign 2">
@@ -331,7 +332,7 @@
                     data-artist="Naama Doron Angel" 
                     data-title="00.01 Rest" 
                     data-year="2025" 
-                    data-medium="Building supplies + Thread" 
+                    data-medium="Building supplies and thread" 
                     data-dimensions="2.00x60 cm">
                 <span class="hover-term-label">00.01 Rest</span>
                 <span class="hover-preview"><img src="images/down_to_earth/00-01-rest1.jpg" alt="00:01 Rest, Naama Doron Angel, view 1">
@@ -357,7 +358,7 @@
                     data-artist="Boris Laevsky" 
                     data-title="Cyrano de Bergerac" 
                     data-year="2025" 
-                    data-medium="Plaster, glue, polyurethane foam, ceramics, glass, cctv camera, cigarettes, beads and pins" 
+                    data-medium="Plaster, glue, polyurethane foam, ceramics, glass, cctv camera, cigarettes, beads, pins" 
                     data-dimensions="60x300 cm">
                 <span class="hover-term-label">Cyrano de Bergerac</span>
                 <span class="hover-preview"><img src="images/down_to_earth/cyrano1.jpg" alt="Cyrano de Bergerac, Boris Laevsky">
@@ -433,12 +434,13 @@
             <p>
               Anna's <span class="hover-term" 
                           data-artist="Anna Shani" 
-                          data-title="Exhibition text" 
+                          data-title="exhibition text" 
                           data-year="2025" 
                           data-medium="" 
-                          data-dimensions="">
-                <span class="hover-term-label">Exhibition text</span>
-                <span class="hover-preview"><img src="images/down_to_earth/text.jpg" alt="Exhibition text, Anna Shani"></span>
+                          data-dimensions=""
+                          data-peripheral="true">
+                <span class="hover-term-label">exhibition text</span>
+                <span class="hover-preview"><img src="images/down_to_earth/text.jpg" alt="exhibition text, Anna Shani"></span>
               </span> on a small stump, held with a small rock, looking at Kaspar.
             </p>
           </div>
@@ -529,8 +531,16 @@
         const medium = termEl.getAttribute("data-medium") || "";
         const dimensions = termEl.getAttribute("data-dimensions") || "";
 
-        // Top line: Bold Artist, Italic Title
-        lightboxCaptionLine.innerHTML = `<span class="lightbox-artist">${artist}</span>, <span class="lightbox-work-title">${title}</span>`;
+        const isPeripheral = termEl.getAttribute("data-peripheral") === "true";
+
+        // Top line: Bold Artist, Italic Title — except for peripheral,
+        // non-artwork items (wayfinding signs, exhibition text), which
+        // get a plainer "Title by Artist" line instead
+        if (isPeripheral) {
+          lightboxCaptionLine.innerHTML = `<span class="lightbox-work-title">${title}</span> by ${artist}`;
+        } else {
+          lightboxCaptionLine.innerHTML = `<span class="lightbox-artist">${artist}</span>, <span class="lightbox-work-title">${title}</span>`;
+        }
 
         // Bottom line: Medium, Dimensions, Year
         const secondaryParts = [];
