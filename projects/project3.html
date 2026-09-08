@@ -535,9 +535,12 @@
 
         // Top line: Bold Artist, Italic Title — except for peripheral,
         // non-artwork items (wayfinding signs, exhibition text), which
-        // get a plainer "Title by Artist" line instead
+        // get a plainer "Title by artist" line instead, title
+        // capitalized and artist lowercase
         if (isPeripheral) {
-          lightboxCaptionLine.innerHTML = `<span class="lightbox-work-title">${title}</span> by ${artist}`;
+          const displayTitle = title.charAt(0).toUpperCase() + title.slice(1);
+          const displayArtist = artist.toLowerCase();
+          lightboxCaptionLine.innerHTML = `<span class="lightbox-work-title">${displayTitle}</span> by ${displayArtist}`;
         } else {
           lightboxCaptionLine.innerHTML = `<span class="lightbox-artist">${artist}</span>, <span class="lightbox-work-title">${title}</span>`;
         }
