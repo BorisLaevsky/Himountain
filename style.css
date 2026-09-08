@@ -115,6 +115,7 @@ a {
   letter-spacing: 0.02em;
   color: #000;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 }
 
@@ -238,6 +239,7 @@ a {
   color: #000;
   opacity: 0.4;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   transition: opacity 0.2s ease;
 }
@@ -331,6 +333,7 @@ a {
   font-size: 1.2em;
   color: #000;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: 4px;
   opacity: 0.85;
   transition: opacity 0.2s ease;
@@ -362,6 +365,7 @@ a {
   height: 220px;
   width: auto;
   display: block;
+  cursor: pointer;
 }
 
 .contact-sticker-toggle button {
@@ -376,6 +380,7 @@ a {
   color: #000;
   opacity: 0.85;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: 4px;
   cursor: pointer;
   padding: 0;
@@ -446,6 +451,7 @@ p {
   font-weight: 700;
   font-style: italic;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   white-space: nowrap;
 }
 
@@ -567,6 +573,7 @@ p {
   color: #e30613;
   font-style: italic;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-decoration-style: dotted;
   text-underline-offset: 4px;
 }
@@ -761,6 +768,7 @@ figcaption.work-credits {
 
 .meta-link {
   text-decoration: underline;
+  text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   opacity: 0.85;
   transition: opacity 0.2s ease;

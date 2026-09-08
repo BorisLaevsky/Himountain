@@ -146,9 +146,12 @@ const stickerToggleBtn = document.getElementById('stickerToggleBtn');
 if (stickerToggleImg && stickerToggleBtn) {
   let cheered = false;
 
-  stickerToggleBtn.addEventListener('click', () => {
+  function toggleSticker() {
     cheered = !cheered;
     stickerToggleImg.src = cheered ? '../assets/sticker1.png?v=3' : '../assets/sticker2.png?v=4';
     stickerToggleBtn.textContent = cheered ? 'Cheer down.' : 'Cheer up!';
-  });
+  }
+
+  stickerToggleBtn.addEventListener('click', toggleSticker);
+  stickerToggleImg.addEventListener('click', toggleSticker);
 }
