@@ -148,7 +148,7 @@ if (stickerToggleImg && stickerToggleBtn) {
 
   stickerToggleBtn.addEventListener('click', () => {
     cheered = !cheered;
-    stickerToggleImg.src = cheered ? '../assets/sticker2.png' : '../assets/sticker1.png';
+    stickerToggleImg.src = cheered ? '../assets/sticker1.png' : '../assets/sticker2.png';
     stickerToggleBtn.textContent = cheered ? 'Cheer down' : 'Cheer up!';
   });
 }
