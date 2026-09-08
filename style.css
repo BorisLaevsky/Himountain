@@ -355,8 +355,12 @@ a {
 }
 
 .contact-sticker-toggle img {
-  width: 160px;
-  height: auto;
+  /* Fixed by height (not width): the two sticker crops have slightly
+     different aspect ratios, so sizing by width left them at different
+     heights — matching height instead keeps the figures reading as the
+     same size when the toggle switches between them. */
+  height: 220px;
+  width: auto;
   display: block;
 }
 
@@ -367,7 +371,8 @@ a {
   appearance: none;
   font: inherit;
   font-family: inherit;
-  font-size: 1.2em;
+  font-size: 0.95em;
+  font-style: italic;
   color: #000;
   opacity: 0.85;
   text-decoration: underline;
