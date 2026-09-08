@@ -347,17 +347,40 @@ a {
   display: block;
 }
 
-.contact-stickers {
+.contact-sticker-toggle {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
   margin-top: 24px;
 }
 
-.contact-stickers img {
-  width: 120px;
-  height: 120px;
+.contact-sticker-toggle img {
+  width: 160px;
+  height: 160px;
   object-fit: contain;
   display: block;
+}
+
+.contact-sticker-toggle button {
+  background: none;
+  border: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+  font-family: inherit;
+  font-size: 1.2em;
+  color: #000;
+  opacity: 0.85;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.contact-sticker-toggle button:hover {
+  opacity: 1;
 }
 /* =============================
    MAIN PAGE (#home)

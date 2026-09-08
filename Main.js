@@ -138,3 +138,17 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
     if (e.key === 'Escape') closeDropdown();
   });
 }
+
+/* --- Contact page: sticker toggle --- */
+const stickerToggleImg = document.getElementById('stickerToggleImg');
+const stickerToggleBtn = document.getElementById('stickerToggleBtn');
+
+if (stickerToggleImg && stickerToggleBtn) {
+  let cheered = false;
+
+  stickerToggleBtn.addEventListener('click', () => {
+    cheered = !cheered;
+    stickerToggleImg.src = cheered ? '../assets/sticker2.png' : '../assets/sticker1.png';
+    stickerToggleBtn.textContent = cheered ? 'Cheer down' : 'Cheer up!';
+  });
+}
