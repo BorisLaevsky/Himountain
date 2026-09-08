@@ -542,7 +542,7 @@
         let caption;
         if (isPeripheral) {
           const displayTitle = title.charAt(0).toUpperCase() + title.slice(1);
-          const displayArtist = artist.toLowerCase();
+          const displayArtist = artist;
           caption = `<span class="lightbox-work-title">${displayTitle}</span> by ${displayArtist}`;
         } else {
           caption = `<span class="lightbox-artist">${artist}</span>, <span class="lightbox-work-title">${title}</span>`;
