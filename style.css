@@ -336,17 +336,6 @@ a {
   opacity: 1;
 }
 
-.contact-image {
-  margin: 0;
-  width: 100%;
-}
-
-.contact-image img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
 .contact-sticker-toggle {
   display: flex;
   flex-direction: column;
