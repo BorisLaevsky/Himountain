@@ -346,6 +346,19 @@ a {
   height: auto;
   display: block;
 }
+
+.contact-stickers {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.contact-stickers img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+}
 /* =============================
    MAIN PAGE (#home)
 ============================= */
