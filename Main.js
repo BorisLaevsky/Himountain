@@ -155,3 +155,41 @@ if (stickerToggleImg && stickerToggleBtn) {
   stickerToggleBtn.addEventListener('click', toggleSticker);
   stickerToggleImg.addEventListener('click', toggleSticker);
 }
+
+/* --- Lazy-load & lazy-autoplay documentation videos ---
+   These are the always-visible "video-stack" / "video-portrait" documentation
+   videos (Being Different, You Are All Daylight). They used to have
+   `autoplay` and default preload, which made the browser fetch the whole
+   file the instant the page loaded, no matter how far down the page the
+   video actually sat. Marking them `.lazy-video` with the real file moved
+   from <source src> to <source data-src> stops any download from starting
+   until the video is about to scroll into view, then this loads and plays
+   it once, same as before but only when it's actually about to be seen. */
+const lazyVideos = document.querySelectorAll('video.lazy-video');
+
+if (lazyVideos.length) {
+  const loadAndPlay = (video) => {
+    video.querySelectorAll('source[data-src]').forEach((source) => {
+      source.src = source.dataset.src;
+      source.removeAttribute('data-src');
+    });
+    video.load();
+    video.play().catch(() => {});
+  };
+
+  if ('IntersectionObserver' in window) {
+    const videoObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        loadAndPlay(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '200px' });
+
+    lazyVideos.forEach((video) => videoObserver.observe(video));
+  } else {
+    // No IntersectionObserver support: fall back to loading right away
+    // rather than never loading at all.
+    lazyVideos.forEach(loadAndPlay);
+  }
+}
