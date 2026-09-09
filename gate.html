@@ -59,7 +59,9 @@
   });
 
   // CONFIGURATION
-  var SPRITE_SRC = "gate_spritesheet.png"; 
+  var SPRITE_SRC = "gate_spritesheet.webp"; 
+  var SPRITE_COLS = 6;          // Grid layout: 6 columns x 3 rows of 18 frames
+  var SPRITE_ROWS = 3;
   var TOTAL_FRAMES = 18;       // Updated: 18 total frames
   var FPS = 10;                // Updated: 10 FPS
   var FADE_IN_DURATION = 2800; // Alpha fade duration in ms
@@ -80,8 +82,8 @@
 
   spriteImg.onload = function () {
     spriteLoaded = true;
-    frameWidth = Math.floor(spriteImg.width / TOTAL_FRAMES);
-    frameHeight = spriteImg.height;
+    frameWidth = Math.floor(spriteImg.width / SPRITE_COLS);
+    frameHeight = Math.floor(spriteImg.height / SPRITE_ROWS);
     layoutBounds();
     stateStart = performance.now();
     requestAnimationFrame(tick);
@@ -121,11 +123,12 @@
     off.height = bounds.h;
     var octx = off.getContext('2d');
 
-    var sx = Math.floor(currentFrame * frameWidth);
+    var sx = Math.floor((currentFrame % SPRITE_COLS) * frameWidth);
+    var sy = Math.floor(Math.floor(currentFrame / SPRITE_COLS) * frameHeight);
     
     octx.drawImage(
       spriteImg, 
-      sx, 0, frameWidth, frameHeight, 
+      sx, sy, frameWidth, frameHeight, 
       0, 0, bounds.w, bounds.h
     );
 
@@ -189,7 +192,8 @@
         lastFrameTime = now;
       }
 
-      var sx = Math.floor(currentFrame * frameWidth);
+      var sx = Math.floor((currentFrame % SPRITE_COLS) * frameWidth);
+      var sy = Math.floor(Math.floor(currentFrame / SPRITE_COLS) * frameHeight);
 
       if (state === 'FADING_IN') {
         var elapsed = now - stateStart;
@@ -198,7 +202,7 @@
         ctx.globalAlpha = alpha;
         ctx.drawImage(
           spriteImg, 
-          sx, 0, frameWidth, frameHeight, 
+          sx, sy, frameWidth, frameHeight, 
           bounds.x, bounds.y, bounds.w, bounds.h
         );
         ctx.globalAlpha = 1.0;
@@ -210,7 +214,7 @@
       } else {
         ctx.drawImage(
           spriteImg, 
-          sx, 0, frameWidth, frameHeight, 
+          sx, sy, frameWidth, frameHeight, 
           bounds.x, bounds.y, bounds.w, bounds.h
         );
       }

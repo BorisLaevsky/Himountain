@@ -8,8 +8,10 @@
   <!-- Preload the gate's spritesheet while the visitor is still on the
        homepage, so it's already cached by the time they click through
        to gate.html — avoids a visible load-lag before the animation
-       can start (the file is ~6.6MB). -->
-  <link rel="preload" as="image" href="gate_spritesheet.png">
+       can start. Now a WebP grid (~0.5MB, down from a 6.6MB PNG strip),
+       and fetchpriority="high" so it wins bandwidth over frames.js below,
+       which the browser would otherwise treat as equally urgent. -->
+  <link rel="preload" as="image" href="gate_spritesheet.webp" fetchpriority="high">
 </head>
 
 <body id="home">
