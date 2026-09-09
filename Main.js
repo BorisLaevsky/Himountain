@@ -139,23 +139,6 @@ if (menuToggle && dropdownMenu && dropdownBackdrop) {
   });
 }
 
-/* --- Contact page: sticker toggle --- */
-const stickerToggleImg = document.getElementById('stickerToggleImg');
-const stickerToggleBtn = document.getElementById('stickerToggleBtn');
-
-if (stickerToggleImg && stickerToggleBtn) {
-  let cheered = false;
-
-  function toggleSticker() {
-    cheered = !cheered;
-    stickerToggleImg.src = cheered ? '../assets/sticker1.png?v=3' : '../assets/sticker2.png?v=4';
-    stickerToggleBtn.textContent = cheered ? 'Cheer down.' : 'Cheer up!';
-  }
-
-  stickerToggleBtn.addEventListener('click', toggleSticker);
-  stickerToggleImg.addEventListener('click', toggleSticker);
-}
-
 /* --- Lazy-load & lazy-autoplay documentation videos ---
    These are the always-visible "video-stack" / "video-portrait" documentation
    videos (Being Different, You Are All Daylight). They used to have
