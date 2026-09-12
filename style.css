@@ -343,10 +343,10 @@ a {
   opacity: 1;
 }
 
-.contact-links p.contact-curators {
-  margin-top: 16px;
+.contact-block > p.contact-curators {
   font-size: 1em;
   opacity: 0.6;
+  margin-bottom: 20px;
 }
 
 .newsletter-signup {
