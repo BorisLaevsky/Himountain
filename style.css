@@ -357,7 +357,15 @@ a {
 .newsletter-signup .newsletter-label {
   font-size: 1em;
   opacity: 0.6;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.newsletter-signup .newsletter-note {
+  max-width: 340px;
+  margin: 0 auto 16px;
+  font-size: 0.8em;
+  opacity: 0.5;
+  line-height: 1.4;
 }
 
 .newsletter-form {
