@@ -321,11 +321,12 @@ a {
 }
 
 .contact-block h1 {
+  font-size: clamp(2.6em, 5vw + 1.6em, 4.2em);
   margin-bottom: 0;
 }
 
 .contact-info {
-  margin-top: clamp(40px, 8vw, 96px);
+  margin-top: clamp(56px, 12vw, 130px);
 }
 
 .contact-label {
@@ -334,7 +335,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   opacity: 0.4;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .contact-links {
@@ -343,11 +344,11 @@ a {
 }
 
 .contact-links p {
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 .contact-links a {
-  font-size: 1em;
+  font-size: 0.9em;
   color: #000;
   text-decoration: none;
   opacity: 0.85;
@@ -359,9 +360,9 @@ a {
 }
 
 .contact-block > p.contact-curators {
-  font-size: 1em;
+  font-size: 0.9em;
   opacity: 0.6;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .newsletter-signup {
