@@ -320,6 +320,23 @@ a {
   align-items: flex-start;
 }
 
+.contact-block h1 {
+  margin-bottom: 0;
+}
+
+.contact-info {
+  margin-top: clamp(40px, 8vw, 96px);
+}
+
+.contact-label {
+  display: block;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.4;
+  margin-bottom: 16px;
+}
+
 .contact-links {
   text-align: left;
   margin-bottom: 24px;
