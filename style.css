@@ -986,7 +986,7 @@ figure.video-portrait video {
   }
 
   .contact-block {
-    margin-top: clamp(80px, 20vw, 240px);
+    margin-top: clamp(110px, 26vw, 280px);
   }
 
   p {
