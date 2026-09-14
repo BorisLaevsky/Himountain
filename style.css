@@ -327,7 +327,7 @@ a {
 }
 
 .contact-info {
-  margin-top: clamp(56px, 12vw, 130px);
+  margin-top: clamp(28px, 6vw, 64px);
 }
 
 .contact-label {
