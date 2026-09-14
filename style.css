@@ -623,13 +623,13 @@ p {
   line-height: 1;
   vertical-align: baseline;
   font-family: 'Cormorant', serif;
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: 700;
   color: #0047ab;
   font-style: italic;
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-decoration-style: dotted;
+  text-decoration-style: solid;
   text-underline-offset: 4px;
 }
 
