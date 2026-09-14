@@ -349,9 +349,7 @@ a {
 .contact-links a {
   font-size: 1em;
   color: #000;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
+  text-decoration: none;
   opacity: 0.85;
   transition: opacity 0.2s ease;
 }
