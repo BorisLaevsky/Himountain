@@ -314,14 +314,14 @@ a {
 .contact-block {
   max-width: 480px;
   width: 100%;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .contact-links {
-  text-align: center;
+  text-align: left;
   margin-bottom: 24px;
 }
 
@@ -330,7 +330,7 @@ a {
 }
 
 .contact-links a {
-  font-size: 1.2em;
+  font-size: 1em;
   color: #000;
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -351,28 +351,14 @@ a {
 
 .newsletter-signup {
   margin-top: 72px;
-  text-align: center;
-}
-
-.newsletter-signup .newsletter-label {
-  font-size: 1em;
-  opacity: 0.6;
-  margin-bottom: 8px;
-}
-
-.newsletter-signup .newsletter-note {
-  max-width: 340px;
-  margin: 0 auto 16px;
-  font-size: 0.8em;
-  opacity: 0.5;
-  line-height: 1.4;
+  text-align: left;
 }
 
 .newsletter-form {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px;
 }
 
@@ -395,7 +381,7 @@ a {
   font-size: 1.1em;
   min-width: 220px;
   padding: 4px 2px;
-  text-align: center;
+  text-align: left;
   color: #000;
   background: transparent;
   border: none;
